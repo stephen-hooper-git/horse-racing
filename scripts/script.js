@@ -1,7 +1,25 @@
 'use strict';
 
+// Set an external flag to allow animations to continue
+let continueAnimating = true;
+
 let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
+
+// Starting point for ball
+let x = canvas.width / 2;
+let y = canvas.height - 30;
+
+let ballRadius = 10; // 10
+
+// add a small value to x and y after every frame has been drawn
+// to make it appear that the ball is moving
+let dx = 10;
+//let dy = -13;
+let dy = -10;
+
+//let gravity = 0.2;
+let gravity = 0;
 
 let holeRadius = 20;
 
@@ -115,4 +133,45 @@ function drawAllHoles() {
     }
 }
 
+function drawBall() {
+    // Draw ball
+    ctx.beginPath();
+    ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+    ctx.fillStyle = "#0095DD";
+    ctx.fill();
+    ctx.closePath();
+}
+
+function draw() {
+    // clear canvas content so ball does not leave a trail
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    drawAllHoles();
+    drawBall();
+    // collisionDetection();
+
+    // Bounce off the left and right wall (reverse the movement of the ball)
+    if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+        dx = -dx;
+    }
+    // Bounce off the top and bottom wall (reverse the movement of the ball)
+    if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
+        dy = -dy;
+    }
+
+    dy = dy + gravity;
+
+    // update x and y with the dx and dy variables on every frame
+    // so the ball will be painted in the new position on every update
+    x += dx;
+    y += dy;
+
+    if (continueAnimating) {
+        // when continueAnimating is false, this new
+        // request will not occur and animation stops
+        requestAnimationFrame(draw);
+    }
+}
+
 drawAllHoles();
+// draw();
