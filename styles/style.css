@@ -12,5 +12,17 @@
 
 canvas {
     background: burlywood;
-    float: right;
+    /* float: right; */
+    position: absolute;
+    left: 910px;
+}
+
+#throw {
+    position: absolute;
+    top: 525px;
+    left: 100px;
+    width: 200px;
+    height: 75px;
+    font-size: 40px;
+    font-weight: bold;
 }

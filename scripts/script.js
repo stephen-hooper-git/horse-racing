@@ -142,13 +142,35 @@ function drawBall() {
     ctx.closePath();
 }
 
+function pythag(x1, y1, x2, y2) {
+
+    let a = x1 - x2;
+    let b = y1 - y2;
+
+    let answer = Math.sqrt(a * a + b * b);
+
+    return answer
+}
+
+function collisionDetection() {
+
+    for (let i = 0; i < allHoles.length; i++) {
+
+        // if (pythag(x + -dx, y + -dy, allHoles[i].x, allHoles[i].y) === 0) {
+        if (pythag(x + -dx, y + -dy, allHoles[i].x, allHoles[i].y) < 5) {
+            alert(allHoles[i].stroke)
+            resetTable()
+        }
+    }
+}
+
 function draw() {
     // clear canvas content so ball does not leave a trail
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     drawAllHoles();
     drawBall();
-    // collisionDetection();
+    collisionDetection();
 
     // Bounce off the left and right wall (reverse the movement of the ball)
     if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
@@ -171,6 +193,70 @@ function draw() {
         // request will not occur and animation stops
         requestAnimationFrame(draw);
     }
+}
+
+let throwButton = document.getElementById("throw")
+
+// let angle = -1;
+let angle = -11;
+
+let angleIncrement = 1;
+
+let countUp = true;
+
+let startCounter = setInterval(angleCounter, 200);
+
+function angleCounter() {
+
+    if (countUp) {
+        angle += angleIncrement;
+    } else {
+        angle -= angleIncrement;
+    }
+
+
+    if (angle === 10) {
+        countUp = false
+    } else if (angle === -10) {
+        countUp = true
+    }
+
+    throwButton.innerText = angle;
+
+}
+
+function throwBall() {
+    continueAnimating = true;
+    clearInterval(startCounter);
+    console.log(angle)
+    dy = -16
+    dx = angle
+    gravity = 0.2
+    //draw()
+    requestAnimationFrame(draw)
+}
+
+function resetTable() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawAllHoles()
+
+
+    x = canvas.width / 2;
+    y = canvas.height - 30;
+
+    drawBall()
+
+    //dy = 0
+    //dx = 0
+
+    // globalID = requestAnimationFrame(draw);
+    // cancelAnimationFrame(globalID)
+
+    // To turn off animation
+    continueAnimating = false;
+    startCounter = setInterval(angleCounter, 200);
+
+
 }
 
 drawAllHoles();
