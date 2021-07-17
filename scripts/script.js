@@ -48,8 +48,42 @@ class Horse {
         this.x = 0
     }
     move() {
-        this.x += Math.random() * 10
+        // this.x += Math.random() * 10
+        this.x += Math.random() * 2
         this.x = Math.floor(this.x)
+        this.box.style.left = this.x + "px"
+        if (this.x > 800) { winner = this }
+    }
+    moveHorseWithBall(distance) {
+        // this.x += Math.random() * 10
+        // this.x = Math.floor(this.x)
+        this.x += distance
+        this.box.style.left = this.x + "px"
+        if (this.x > 800) { winner = this }
+    }
+}
+
+class Player {
+    constructor(colour) {
+        this.colour = colour
+        this.box = document.createElement("div")
+        this.box.style = 'width:100px;height:100px;position:relative'
+        document.getElementById('track').appendChild(this.box)
+        this.box.style.backgroundColor = colour
+        this.box.style.color = 'white'
+        this.box.innerHTML = 'PLAYER 1'
+        this.x = 0
+    }
+    //move() {
+    //    this.x += Math.random() * 10
+    //    this.x = Math.floor(this.x)
+    //    this.box.style.left = this.x + "px"
+    //    if (this.x > 800) { winner = this }
+    //}
+    movePlayerWithBall(distance) {
+        // this.x += Math.random() * 10
+        // this.x = Math.floor(this.x)
+        this.x += distance
         this.box.style.left = this.x + "px"
         if (this.x > 800) { winner = this }
     }
@@ -97,13 +131,15 @@ const allHoles = [
 
 let horses = []
 let winner = null
-let numberOfHorses = 5
+let numberOfHorses = 4
 
-let colors = ['red', 'orange', 'yellow', 'white', 'blue', 'indigo', 'violet', 'black', 'brown', 'pink', 'azure']
+let colors = ['red', 'orange', 'yellow', 'blue', 'white', 'indigo', 'violet', 'black', 'brown', 'pink', 'azure']
 
 for (let h = 0; h < numberOfHorses; h++) {
     horses[h] = new Horse(colors[h])
 }
+
+let player1 = new Player(colors[7])
 
 function start() {
     //setInterval (moveBox,50)
@@ -158,15 +194,55 @@ function collisionDetection() {
 
         // if (pythag(x + -dx, y + -dy, allHoles[i].x, allHoles[i].y) === 0) {
         if (pythag(x + -dx, y + -dy, allHoles[i].x, allHoles[i].y) < 5) {
-            alert(allHoles[i].stroke)
+            // alert(allHoles[i].stroke)
+
+            if (allHoles[i].stroke === 'yellow') {
+                console.log('Move 10px')
+                for (let h of horses) {
+                    player1.movePlayerWithBall(25)
+                }
+                if (winner != null) {
+                    alert(`The winner is ${winner.colour}`)
+                }
+            }
+
+            if (allHoles[i].stroke === 'dodgerblue') {
+                console.log('Move 20px')
+                for (let h of horses) {
+                    player1.movePlayerWithBall(50)
+                }
+                if (winner != null) {
+                    alert(`The winner is ${winner.colour}`)
+                }
+            }
+
+            if (allHoles[i].stroke === 'red') {
+                console.log('Move 30px')
+                for (let h of horses) {
+                    player1.movePlayerWithBall(75)
+                }
+                if (winner != null) {
+                    alert(`The winner is ${winner.colour}`)
+                }
+            }
+
+
+
+
+
+
             resetTable()
         }
     }
 }
 
+function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
 function draw() {
     // clear canvas content so ball does not leave a trail
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    clearCanvas()
 
     drawAllHoles();
     drawBall();
@@ -237,7 +313,7 @@ function throwBall() {
 }
 
 function resetTable() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    clearCanvas()
     drawAllHoles()
 
 
@@ -246,8 +322,8 @@ function resetTable() {
 
     drawBall()
 
-    //dy = 0
-    //dx = 0
+    dy = 0
+    dx = 0
 
     // globalID = requestAnimationFrame(draw);
     // cancelAnimationFrame(globalID)
