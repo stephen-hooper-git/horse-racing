@@ -1,6 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+
 * {
     padding: 0;
     margin: 0;
+}
+
+h1 {
+    font-family: 'Bangers', cursive;
+    letter-spacing: 4px;
+    font-size: 50px;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 #track {
@@ -8,21 +19,35 @@
     width: 900px;
     height: 100%;
     border-right: solid yellow 5px;
+    margin-left: 20px;
 }
 
 canvas {
     background: burlywood;
-    /* float: right; */
     position: absolute;
-    left: 910px;
+    left: 1000px;
 }
 
 #throw {
     position: absolute;
-    top: 525px;
-    left: 100px;
-    width: 200px;
+    top: 500px;
+    left: 1000px;
+    width: 250px;
     height: 75px;
     font-size: 40px;
     font-weight: bold;
+}
+
+ #go {
+    position: absolute;
+    top: 500px;
+    left: 50px;
+    width: 250px;
+    height: 75px;
+    font-size: 40px;
+    font-weight: bold;
+}
+
+img {
+    transform: scaleX(-1); /* flip image */
 }

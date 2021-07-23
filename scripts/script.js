@@ -15,13 +15,14 @@ let ballRadius = 10; // 10
 // add a small value to x and y after every frame has been drawn
 // to make it appear that the ball is moving
 let dx = 10;
-//let dy = -13;
 let dy = -10;
 
 //let gravity = 0.2;
 let gravity = 0;
 
-let holeRadius = 20;
+let holeRadius = 15;
+
+let strokeSize = 5;
 
 let column1 = canvas.width / 9 * 2 - holeRadius
 let column2 = canvas.width / 9 * 3 - holeRadius
@@ -42,24 +43,22 @@ class Horse {
     constructor(colour) {
         this.colour = colour
         this.box = document.createElement("div")
-        this.box.style = 'width:100px;height:100px;position:relative'
+        this.box.style = 'width:75px;height:75px;position:relative'
         document.getElementById('track').appendChild(this.box)
         this.box.style.backgroundColor = colour
+        this.box.innerHTML = '<img src="./images/horse.svg">'
         this.x = 0
     }
     move() {
-        // this.x += Math.random() * 10
         this.x += Math.random() * 2
         this.x = Math.floor(this.x)
         this.box.style.left = this.x + "px"
-        if (this.x > 800) { winner = this }
+        if (this.x > 825) { winner = this }
     }
     moveHorseWithBall(distance) {
-        // this.x += Math.random() * 10
-        // this.x = Math.floor(this.x)
         this.x += distance
         this.box.style.left = this.x + "px"
-        if (this.x > 800) { winner = this }
+        if (this.x > 825) { winner = this }
     }
 }
 
@@ -67,25 +66,17 @@ class Player {
     constructor(colour) {
         this.colour = colour
         this.box = document.createElement("div")
-        this.box.style = 'width:100px;height:100px;position:relative'
+        this.box.style = 'width:75px;height:75px;position:relative'
         document.getElementById('track').appendChild(this.box)
         this.box.style.backgroundColor = colour
         this.box.style.color = 'white'
-        this.box.innerHTML = 'PLAYER 1'
+        this.box.innerHTML = '<img src="./images/horse.svg">'
         this.x = 0
     }
-    //move() {
-    //    this.x += Math.random() * 10
-    //    this.x = Math.floor(this.x)
-    //    this.box.style.left = this.x + "px"
-    //    if (this.x > 800) { winner = this }
-    //}
     movePlayerWithBall(distance) {
-        // this.x += Math.random() * 10
-        // this.x = Math.floor(this.x)
         this.x += distance
         this.box.style.left = this.x + "px"
-        if (this.x > 800) { winner = this }
+        if (this.x > 825) { winner = this }
     }
 }
 
@@ -111,27 +102,29 @@ class Hole {
 }
 
 const allHoles = [
-    new Hole(7, column1, row1, 'black', 'dodgerblue'),
-    new Hole(7, column4, row1, 'black', 'red'),
-    new Hole(7, column7, row1, 'black', 'dodgerblue'),
-    new Hole(7, column2, row2, 'black', 'dodgerblue'),
-    new Hole(7, column4, row2, 'black', 'red'),
-    new Hole(7, column6, row2, 'black', 'dodgerblue'),
-    new Hole(7, column1, row3, 'black', 'yellow'),
-    new Hole(7, column3, row3, 'black', 'dodgerblue'),
-    new Hole(7, column5, row3, 'black', 'dodgerblue'),
-    new Hole(7, column7, row3, 'black', 'yellow'),
-    new Hole(7, column2, row4, 'black', 'yellow'),
-    new Hole(7, column4, row4, 'black', 'dodgerblue'),
-    new Hole(7, column6, row4, 'black', 'yellow'),
-    new Hole(7, column3, row5, 'black', 'yellow'),
-    new Hole(7, column5, row5, 'black', 'yellow'),
-    new Hole(7, column4, row6, 'black', 'yellow')
+    new Hole(strokeSize, column1, row1, 'black', 'dodgerblue'),
+    new Hole(strokeSize, column4, row1, 'black', 'red'),
+    new Hole(strokeSize, column7, row1, 'black', 'dodgerblue'),
+    new Hole(strokeSize, column2, row2, 'black', 'dodgerblue'),
+    new Hole(strokeSize, column4, row2, 'black', 'red'),
+    new Hole(strokeSize, column6, row2, 'black', 'dodgerblue'),
+    new Hole(strokeSize, column1, row3, 'black', 'yellow'),
+    new Hole(strokeSize, column3, row3, 'black', 'dodgerblue'),
+    new Hole(strokeSize, column5, row3, 'black', 'dodgerblue'),
+    new Hole(strokeSize, column7, row3, 'black', 'yellow'),
+    new Hole(strokeSize, column2, row4, 'black', 'yellow'),
+    new Hole(strokeSize, column4, row4, 'black', 'dodgerblue'),
+    new Hole(strokeSize, column6, row4, 'black', 'yellow'),
+    new Hole(strokeSize, column3, row5, 'black', 'yellow'),
+    new Hole(strokeSize, column5, row5, 'black', 'yellow'),
+    new Hole(strokeSize, column4, row6, 'black', 'yellow')
 ];
 
 let horses = []
 let winner = null
 let numberOfHorses = 4
+let distanceCovered = 0
+let holeScored
 
 let colors = ['red', 'orange', 'yellow', 'blue', 'white', 'indigo', 'violet', 'black', 'brown', 'pink', 'azure']
 
@@ -139,11 +132,11 @@ for (let h = 0; h < numberOfHorses; h++) {
     horses[h] = new Horse(colors[h])
 }
 
-let player1 = new Player(colors[7])
+let player1 = new Player(colors[5])
 
 function start() {
-    //setInterval (moveBox,50)
     requestAnimationFrame(moveHorses)
+    requestAnimationFrame(movePlayer)
 }
 
 function moveHorses() {
@@ -156,11 +149,25 @@ function moveHorses() {
     else {
         alert(`The winner is ${winner.colour}`)
     }
-    /*
-    if(x<900){
-        requestAnimationFrame(moveHorses)
-    } 
-    */
+}
+
+function movePlayer() {
+
+    if (holeScored === 'yellow') { distanceCovered = 50 }
+    if (holeScored === 'dodgerblue') { distanceCovered = 100 }
+    if (holeScored === 'red') { distanceCovered = 150 }
+
+    player1.movePlayerWithBall(distanceCovered)
+
+    if (winner === null) {
+        requestAnimationFrame(movePlayer)
+    }
+    else {
+        // alert(`The winner is ${winner.colour}`)
+    }
+
+    holeScored = ''
+    distanceCovered = 0
 }
 
 function drawAllHoles() {
@@ -194,42 +201,12 @@ function collisionDetection() {
 
         // if (pythag(x + -dx, y + -dy, allHoles[i].x, allHoles[i].y) === 0) {
         if (pythag(x + -dx, y + -dy, allHoles[i].x, allHoles[i].y) < 5) {
-            // alert(allHoles[i].stroke)
 
-            if (allHoles[i].stroke === 'yellow') {
-                console.log('Move 10px')
-                for (let h of horses) {
-                    player1.movePlayerWithBall(25)
-                }
-                if (winner != null) {
-                    alert(`The winner is ${winner.colour}`)
-                }
-            }
+            holeScored = allHoles[i].stroke
 
-            if (allHoles[i].stroke === 'dodgerblue') {
-                console.log('Move 20px')
-                for (let h of horses) {
-                    player1.movePlayerWithBall(50)
-                }
-                if (winner != null) {
-                    alert(`The winner is ${winner.colour}`)
-                }
-            }
+            throwButton.style.backgroundColor = holeScored
 
-            if (allHoles[i].stroke === 'red') {
-                console.log('Move 30px')
-                for (let h of horses) {
-                    player1.movePlayerWithBall(75)
-                }
-                if (winner != null) {
-                    alert(`The winner is ${winner.colour}`)
-                }
-            }
-
-
-
-
-
+            movePlayer()
 
             resetTable()
         }
@@ -273,14 +250,13 @@ function draw() {
 
 let throwButton = document.getElementById("throw")
 
-// let angle = -1;
-let angle = -11;
+let angle = -6;
 
 let angleIncrement = 1;
 
 let countUp = true;
 
-let startCounter = setInterval(angleCounter, 200);
+let startCounter = setInterval(angleCounter, 400);
 
 function angleCounter() {
 
@@ -291,13 +267,13 @@ function angleCounter() {
     }
 
 
-    if (angle === 10) {
+    if (angle === 5) {
         countUp = false
-    } else if (angle === -10) {
+    } else if (angle === -5) {
         countUp = true
     }
 
-    throwButton.innerText = angle;
+    throwButton.innerText = `Throw (${angle})`;
 
 }
 
@@ -305,17 +281,15 @@ function throwBall() {
     continueAnimating = true;
     clearInterval(startCounter);
     console.log(angle)
-    dy = -16
+    dy = -12
     dx = angle
     gravity = 0.2
-    //draw()
     requestAnimationFrame(draw)
 }
 
 function resetTable() {
     clearCanvas()
     drawAllHoles()
-
 
     x = canvas.width / 2;
     y = canvas.height - 30;
@@ -325,15 +299,10 @@ function resetTable() {
     dy = 0
     dx = 0
 
-    // globalID = requestAnimationFrame(draw);
-    // cancelAnimationFrame(globalID)
-
     // To turn off animation
     continueAnimating = false;
-    startCounter = setInterval(angleCounter, 200);
-
+    startCounter = setInterval(angleCounter, 400);
 
 }
 
 drawAllHoles();
-// draw();
